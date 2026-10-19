@@ -44,7 +44,7 @@
   header{position:relative;min-height:100svh;display:flex;align-items:center;overflow:hidden;
          background:radial-gradient(1200px 700px at 70% -10%, rgba(34,211,238,.07), transparent 60%),
                     radial-gradient(900px 600px at 10% 110%, rgba(167,139,250,.05), transparent 60%), var(--bg)}
-  #bg3d{position:absolute;inset:0;z-index:0}
+  #bg3d{position:absolute;inset:0;width:100%;height:100%;z-index:0}
   header .inner{position:relative;z-index:1;max-width:1160px;margin:0 auto;padding:120px 24px 80px;width:100%}
   .overline{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11.5px;letter-spacing:.2em;
             text-transform:uppercase;color:var(--dim);border:1px solid var(--hair);border-radius:999px;padding:8px 16px;background:rgba(255,255,255,.02)}
@@ -402,10 +402,13 @@ new IntersectionObserver((en) => inView = en[0].isIntersecting).observe(document
 
 function resize() {
   const w = canvas.clientWidth, h = canvas.clientHeight;
+  if (!w || !h) return;
   renderer.setSize(w, h, false);
   camera.aspect = w / h; camera.updateProjectionMatrix();
+  // keep the core right of the headline on wide screens, centered on narrow
+  core.position.x = camera.aspect > 1.15 ? 2.6 : 0;
 }
-addEventListener("resize", resize); resize();
+new ResizeObserver(resize).observe(canvas); resize();
 
 const clock = new THREE.Clock();
 (function loop() {
@@ -418,7 +421,7 @@ const clock = new THREE.Clock();
   wire.material.opacity = 0.22 + Math.sin(t * 1.4) * 0.06;
   camera.position.x += (mx * 0.9 - camera.position.x) * 0.03;
   camera.position.y += (-my * 0.6 - camera.position.y) * 0.03;
-  camera.lookAt(0, 0, 0);
+  camera.lookAt(core.position.x * 0.45, 0, 0);
   renderer.render(scene, camera);
 })();
 
