@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Cockpit — Your Mac, read at a glance</title>
+<meta name="description" content="A mission-control dashboard for your Mac. Live gauges, a read-only disk map, a per-app network ledger and an AI intelligence briefing — in 4.6 MB, with zero telemetry.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='none' stroke='%2322d3ee' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%2322d3ee'/%3E%3C/svg%3E">
+<script type="importmap">
+{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
+</script>
+<style>
+  :root{
+    --bg:#05070d; --bg2:#0a0f1a; --panel:rgba(255,255,255,.03); --hair:rgba(255,255,255,.08);
+    --text:#e8eef8; --dim:#93a1b8; --faint:#5b6b84;
+    --cyan:#22d3ee; --green:#34d399; --amber:#f59e0b; --red:#f43f5e; --violet:#a78bfa;
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  ::selection{background:rgba(34,211,238,.28)}
+  a{color:var(--cyan);text-decoration:none}
+  img{max-width:100%;display:block}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan)}
+  .hairline{border-top:1px solid var(--hair)}
+
+  /* ---------- nav ---------- */
+  nav{position:fixed;inset:0 0 auto;z-index:50;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+      background:rgba(5,7,13,.72);border-bottom:1px solid var(--hair)}
+  nav .bar{max-width:1160px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:28px}
+  .logo{font-family:var(--mono);font-size:13px;letter-spacing:.28em;font-weight:700;color:var(--text)}
+  .logo b{color:var(--cyan)}
+  nav .links{margin-left:auto;display:flex;gap:26px;align-items:center}
+  nav .links a{color:var(--dim);font-size:13.5px;transition:color .2s}
+  nav .links a:hover{color:var(--text)}
+  nav .cta{padding:7px 16px;border:1px solid var(--cyan);border-radius:8px;color:var(--cyan)!important;font-family:var(--mono);font-size:12px!important;letter-spacing:.06em}
+  nav .cta:hover{background:rgba(34,211,238,.12)}
+  @media(max-width:760px){nav .links a:not(.cta){display:none}}
+
+  /* ---------- hero ---------- */
+  header{position:relative;min-height:100svh;display:flex;align-items:center;overflow:hidden;
+         background:radial-gradient(1200px 700px at 70% -10%, rgba(34,211,238,.07), transparent 60%),
+                    radial-gradient(900px 600px at 10% 110%, rgba(167,139,250,.05), transparent 60%), var(--bg)}
+  #bg3d{position:absolute;inset:0;z-index:0}
+  header .inner{position:relative;z-index:1;max-width:1160px;margin:0 auto;padding:120px 24px 80px;width:100%}
+  .overline{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11.5px;letter-spacing:.2em;
+            text-transform:uppercase;color:var(--dim);border:1px solid var(--hair);border-radius:999px;padding:8px 16px;background:rgba(255,255,255,.02)}
+  .overline .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 2.4s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  h1{font-size:clamp(44px,7vw,84px);line-height:1.02;letter-spacing:-.03em;font-weight:700;margin:30px 0 22px;max-width:900px}
+  h1 .grad{background:linear-gradient(92deg,var(--cyan) 0%,var(--violet) 55%,var(--green) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{font-size:clamp(16px,2vw,20px);color:var(--dim);max-width:640px;line-height:1.65}
+  .hero-cta{display:flex;gap:14px;margin-top:38px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:14px 26px;border-radius:10px;font-size:15px;font-weight:600;transition:transform .15s,box-shadow .2s,background .2s}
+  .btn.primary{background:var(--cyan);color:#04222a;box-shadow:0 0 30px rgba(34,211,238,.25)}
+  .btn.primary:hover{transform:translateY(-2px);box-shadow:0 6px 40px rgba(34,211,238,.4)}
+  .btn.ghost{border:1px solid var(--hair);color:var(--text);background:rgba(255,255,255,.02)}
+  .btn.ghost:hover{border-color:rgba(255,255,255,.2)}
+  .chips{display:flex;gap:12px;margin-top:44px;flex-wrap:wrap}
+  .chip{font-family:var(--mono);font-size:12.5px;color:var(--dim);border:1px solid var(--hair);border-radius:8px;padding:9px 14px;background:rgba(255,255,255,.02)}
+  .chip b{color:var(--text);font-weight:600}
+
+  /* ---------- ticker ---------- */
+  .ticker{border-block:1px solid var(--hair);overflow:hidden;background:rgba(255,255,255,.015)}
+  .ticker .track{display:flex;gap:56px;padding:11px 0;width:max-content;animation:tick 42s linear infinite;font-family:var(--mono);font-size:12px;color:var(--faint);white-space:nowrap}
+  .ticker span b{color:var(--dim);font-weight:500}
+  .ticker .up{color:var(--green)} .ticker .dn{color:var(--cyan)} .ticker .warn{color:var(--amber)}
+  @keyframes tick{to{transform:translateX(-50%)}}
+  @media(prefers-reduced-motion:reduce){.ticker .track{animation:none}}
+
+  /* ---------- sections ---------- */
+  section{padding:110px 0}
+  .sec-head{margin-bottom:56px}
+  h2{font-size:clamp(30px,4vw,46px);letter-spacing:-.02em;line-height:1.1;margin-top:14px}
+  .lead{color:var(--dim);font-size:17px;line-height:1.7;max-width:640px;margin-top:16px}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:640px){.grid{grid-template-columns:1fr}}
+  .card{border:1px solid var(--hair);border-radius:14px;padding:26px;background:var(--panel);transition:transform .2s,border-color .2s,background .2s;position:relative;overflow:hidden}
+  .card:hover{transform:translateY(-3px);border-color:rgba(34,211,238,.35);background:rgba(34,211,238,.04)}
+  .card .ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;margin-bottom:16px;border:1px solid var(--hair);background:rgba(255,255,255,.03)}
+  .card h3{font-size:16px;margin-bottom:8px;letter-spacing:-.01em}
+  .card p{font-size:13.5px;color:var(--dim);line-height:1.6}
+
+  .split{display:grid;grid-template-columns:1fr 1.15fr;gap:60px;align-items:center}
+  .split.flip{grid-template-columns:1.15fr 1fr}
+  @media(max-width:900px){.split,.split.flip{grid-template-columns:1fr;gap:34px}}
+  .split .copy h2{margin:14px 0 0}
+  .badge{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+         color:var(--green);border:1px solid rgba(52,211,153,.35);border-radius:999px;padding:6px 12px;background:rgba(52,211,153,.07)}
+  .badge.warn{color:var(--amber);border-color:rgba(245,158,11,.35);background:rgba(245,158,11,.07)}
+  .badge.info{color:var(--cyan);border-color:rgba(34,211,238,.35);background:rgba(34,211,238,.07)}
+  .points{margin-top:22px;display:grid;gap:12px}
+  .points li{list-style:none;color:var(--dim);font-size:14.5px;line-height:1.6;padding-left:26px;position:relative}
+  .points li::before{content:"◆";position:absolute;left:0;top:1px;font-size:9px;color:var(--cyan)}
+
+  .shot{border:1px solid var(--hair);border-radius:16px;overflow:hidden;background:#070b14;box-shadow:0 30px 80px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.02) inset;position:relative}
+  .shot .bar{display:flex;align-items:center;gap:7px;padding:11px 14px;border-bottom:1px solid var(--hair);background:rgba(255,255,255,.02)}
+  .shot .bar i{width:10px;height:10px;border-radius:50%;background:#2a3342}
+  .shot .bar i:nth-child(1){background:#f8717155}.shot .bar i:nth-child(2){background:#fbbf2455}.shot .bar i:nth-child(3){background:#34d39955}
+  .shot .bar span{margin-left:10px;font-family:var(--mono);font-size:11px;color:var(--faint)}
+  .shot img{width:100%}
+  figcaption{font-family:var(--mono);font-size:11.5px;color:var(--faint);margin-top:12px;text-align:center}
+
+  /* pull quote */
+  .pull{padding:140px 0;text-align:center;position:relative;
+        background:radial-gradient(700px 340px at 50% 50%, rgba(34,211,238,.06), transparent 70%)}
+  .pull h2{font-size:clamp(38px,6vw,72px);letter-spacing:-.03em}
+  .pull h2 em{font-style:normal;color:var(--red)}
+  .pull p{color:var(--dim);margin-top:18px;font-size:17px}
+
+  /* numbers */
+  .nums{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  @media(max-width:760px){.nums{grid-template-columns:repeat(2,1fr)}}
+  .num{border:1px solid var(--hair);border-radius:14px;padding:34px 22px;text-align:center;background:var(--panel)}
+  .num .v{font-family:var(--mono);font-size:clamp(34px,4.4vw,52px);font-weight:700;letter-spacing:-.02em;color:var(--cyan)}
+  .num .l{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin-top:10px}
+
+  /* faq */
+  .faq{max-width:760px;margin:0 auto}
+  details{border-bottom:1px solid var(--hair);padding:6px 0}
+  summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 0;font-size:16.5px;font-weight:600}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";font-family:var(--mono);color:var(--cyan);font-size:20px;transition:transform .2s}
+  details[open] summary::after{transform:rotate(45deg)}
+  details p{color:var(--dim);font-size:14.5px;line-height:1.7;padding-bottom:22px;max-width:640px}
+
+  /* download */
+  .dl{border:1px solid rgba(34,211,238,.3);border-radius:20px;padding:70px 40px;text-align:center;position:relative;overflow:hidden;
+      background:radial-gradient(600px 300px at 50% 0%, rgba(34,211,238,.09), transparent 70%), var(--panel)}
+  .dl h2{margin-top:12px}
+  .dl .sub2{color:var(--dim);margin-top:14px;font-size:15.5px}
+  .dl .btn{margin-top:34px}
+
+  footer{border-top:1px solid var(--hair);padding:44px 0 60px}
+  footer .cols{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;color:var(--faint);font-size:13px}
+  footer .cols div{display:grid;gap:8px}
+  footer .cols a{color:var(--dim)}
+  footer .fine{margin-top:34px;font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.04em}
+
+  /* reveal on scroll */
+  .rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+  .rv.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="bar">
+    <a class="logo" href="#top">SYSTEM<b>·</b>COCKPIT</a>
+    <div class="links">
+      <a href="#features">Features</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#numbers">Numbers</a>
+      <a href="#faq">FAQ</a>
+      <a class="cta" href="#download">Download</a>
+    </div>
+  </div>
+</nav>
+
+<header id="top">
+  <canvas id="bg3d"></canvas>
+  <div class="inner">
+    <span class="overline"><span class="dot"></span>For macOS · Apple Silicon · v0.1</span>
+    <h1>Your Mac,<br>read <span class="grad">at a glance.</span></h1>
+    <p class="sub">Live gauges, a read-only disk map, a per-app network ledger and an AI intelligence briefing — in a 4.6&nbsp;MB app that renders with macOS's own engine and never phones home.</p>
+    <div class="hero-cta">
+      <a class="btn primary" href="https://github.com/ThinkCode/system-cockpit/releases/latest/download/System_Cockpit_0.1.0_aarch64.dmg">Download the DMG — 4.6 MB</a>
+      <a class="btn ghost" href="system-cockpit-film.mp4">▶ Watch the film · 60s</a>
+    </div>
+    <div class="chips">
+      <span class="chip"><b>4.6 MB</b> download</span>
+      <span class="chip"><b>~2%</b> CPU, window open</span>
+      <span class="chip"><b>0</b> telemetry endpoints</span>
+      <span class="chip">signed · notarized · <b>stapled</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="ticker" aria-hidden="true">
+  <div class="track">
+    <span>CPU <b class="dn">62%</b></span><span>MEMORY <b class="dn">74%</b></span><span>DISK / <b class="warn">94%</b></span><span>SWAP <b class="warn">17 GB</b></span><span>digup <b class="warn">97.2% CPU</b></span><span>↓ 41.7 kB/s</span><span>↑ 15.6 kB/s</span><span>215 GB free</span><span>300 processes tracked</span><span>backupd <b>8 MB/s to backup volume</b></span><span>no new listeners</span><span>no many-IP beaconing</span><span>briefing: <b class="up">HEALTHY</b></span>
+    <span>CPU <b class="dn">62%</b></span><span>MEMORY <b class="dn">74%</b></span><span>DISK / <b class="warn">94%</b></span><span>SWAP <b class="warn">17 GB</b></span><span>digup <b class="warn">97.2% CPU</b></span><span>↓ 41.7 kB/s</span><span>↑ 15.6 kB/s</span><span>215 GB free</span><span>300 processes tracked</span><span>backupd <b>8 MB/s to backup volume</b></span><span>no new listeners</span><span>no many-IP beaconing</span><span>briefing: <b class="up">HEALTHY</b></span>
+  </div>
+</div>
+
+<!-- ================= FEATURES GRID ================= -->
+<section id="features">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="eyebrow">What's inside</span>
+      <h2>A cockpit, not a task manager.</h2>
+      <p class="lead">Activity Monitor tells you what is happening. System Cockpit tells you what it means — next to the numbers, in plain language.</p>
+    </div>
+    <div class="grid">
+      <div class="card rv"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div><h3>Live cockpit</h3><p>CPU, memory, disk and swap gauges with 4-minute sparklines. A Rust collector samples twice a second and streams to the UI over IPC.</p></div>
+      <div class="card rv"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="1.6"><rect x="3" y="3" width="11" height="11" rx="1.5"/><rect x="16" y="8" width="5" height="13" rx="1.5"/><rect x="8" y="16" width="6" height="5" rx="1.5"/></svg></div><h3>Read-only disk map</h3><p>A treemap of your home folder sized by space used, with severity-tagged findings. It never deletes — cleanup only via a script you inspect and run yourself.</p></div>
+      <div class="card rv"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><circle cx="4" cy="6" r="2"/><circle cx="20" cy="6" r="2"/><circle cx="4" cy="18" r="2"/><circle cx="20" cy="18" r="2"/><path d="M6 7l4 3M18 7l-4 3M6 17l4-3M18 17l-4-3"/></svg></div><h3>Network ledger</h3><p>Every app that ever moved a packet — bytes in/out, first and last seen, live socket endpoints. Persists across restarts; the table is virtualized so thousands of apps scroll like ten.</p></div>
+      <div class="card rv"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.6"><path d="M4 18l4-8 4 5 3-9 5 12"/></svg></div><h3>Honest speed test</h3><p>Real download/upload/ping against Cloudflare's edge with live per-phase progress — and if you hit a rate limit, your last result stays on screen while a Retry-After countdown arms.</p></div>
+      <div class="card rv"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.6"><path d="M12 3l1.8 4.6L18 9.4l-4.2 1.8L12 16l-1.8-4.8L6 9.4l4.2-1.8z"/><path d="M19 15l.9 2.3L22 18l-2.1.7L19 21l-.9-2.3L16 18l2.1-.9z"/></svg></div><h3>Intelligence briefing</h3><p>Four sections — health, network, processes, storage — written by the model you point it at, with severity-tagged findings that link to the evidence.</p></div>
+      <div class="card rv"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="1.6"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 21l1.9-5.4A8 8 0 1 1 21 12z"/></svg></div><h3>Copilot</h3><p>"Why is the disk filling up?" "Anything unusual on the network?" Ask in plain language; answers stream from your local model, grounded in live telemetry.</p></div>
+      <div class="card rv"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="1.6"><path d="M12 3a6 6 0 0 0-6 6v4l-2 4h16l-2-4V9a6 6 0 0 0-6-6z"/><path d="M10 21h4"/></svg></div><h3>Alerts with explanations</h3><p>Runaway CPU, disk-drain rates, memory growth, suspicious connection fan-out — each with a one-click plain-language explanation, persisted locally.</p></div>
+      <div class="card rv"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.6"><path d="M4 19V5a2 2 0 0 1 2-2h13v18H6a2 2 0 0 1-2-2z"/><path d="M8 7h8M8 11h8M8 15h5"/></svg></div><h3>It remembers</h3><p>A local knowledge base feeds what past briefings learned into future ones — so recurring suspects get recognized, not re-discovered.</p></div>
+      <div class="card rv"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></div><h3>Bring your own model</h3><p>Briefings and Copilot speak to any OpenAI-compatible endpoint — a local Ollama is ideal. The header chip always shows which model is live.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DISK MAP ================= -->
+<section class="hairline" style="background:var(--bg2)">
+  <div class="wrap">
+    <div class="split">
+      <div class="copy rv">
+        <span class="badge">Read-only by design</span>
+        <h2>It can look.<br>It can't touch.</h2>
+        <p class="lead">The disk map walks your home folder, sizes everything by space used and tags the findings worth knowing — the big, the stale and the weird. What it never does is delete. When you want something gone, it writes a cleanup script for you to read, edit and run yourself.</p>
+        <ul class="points">
+          <li>Severity-tagged findings: what's big, what's stale, what's weird</li>
+          <li>Per-scan storage digest cached with the scan — no re-analysis to re-read it</li>
+          <li>Deletion path is a script <b>you</b> copy out and run — never auto-delete</li>
+        </ul>
+      </div>
+      <figure class="rv">
+        <div class="shot"><div class="bar"><i></i><i></i><i></i><span>System Cockpit — Disk map</span></div>
+        <img src="screenshots/diskmap.png" alt="Disk map treemap" loading="lazy"></div>
+        <figcaption>Read-only scan · sized by space used</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ================= NETWORK ================= -->
+<section>
+  <div class="wrap">
+    <div class="split flip">
+      <figure class="rv">
+        <div class="shot"><div class="bar"><i></i><i></i><i></i><span>System Cockpit — Network</span></div>
+        <img src="screenshots/network.png" alt="Network ledger" loading="lazy"></div>
+        <figcaption>Per-app ledger · persists across restarts</figcaption>
+      </figure>
+      <div class="copy rv">
+        <span class="badge info">Per-app network ledger</span>
+        <h2>Who talked, when, and how much.</h2>
+        <p class="lead">Every application that has moved a single packet, with bytes in and out, first-seen and last-seen timestamps, and its live socket endpoints — filterable by app, address or port. It survives restarts, so last Tuesday is still one query away.</p>
+        <ul class="points">
+          <li>Live dot per row when an app is transmitting <i>right now</i></li>
+          <li>Sortable by last seen, bytes in, bytes out or name</li>
+          <li>Speed test built in — with graceful rate-limit handling</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BRIEFING + COPILOT ================= -->
+<section class="hairline" style="background:var(--bg2)">
+  <div class="wrap">
+    <div class="split">
+      <div class="copy rv">
+        <span class="badge info">AI, on your terms</span>
+        <h2>A briefing that cites its evidence.</h2>
+        <p class="lead">Four sections — system health, network &amp; firewall, notable processes, storage — written by the local model you point it at. Findings carry severity tags and reference the numbers they came from. Your telemetry goes to your endpoint, or nowhere at all.</p>
+        <ul class="points">
+          <li>Copilot answers "why is the disk filling up?" from live data</li>
+          <li>Alert explanations: one click, plain language</li>
+          <li>Header chip shows exactly which model is live</li>
+        </ul>
+      </div>
+      <figure class="rv">
+        <div class="shot"><div class="bar"><i></i><i></i><i></i><span>System Cockpit — Intelligence briefing</span></div>
+        <img src="screenshots/briefing.png" alt="Intelligence briefing" loading="lazy"></div>
+        <figcaption>4-part briefing · severity-tagged</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PULL QUOTE / PRIVACY ================= -->
+<section id="privacy" class="pull">
+  <div class="wrap rv">
+    <span class="eyebrow">Privacy</span>
+    <h2>Nothing phones home.<br><em>Ever.</em></h2>
+    <p style="max-width:620px;margin:18px auto 0">No analytics, no crash reporter, no accounts, no update beacon. Your data lives in plain JSON you can open, back up or delete. The only network touches are the speed test and the model endpoint you configure — both only when you click.</p>
+    <div class="chips" style="justify-content:center">
+      <span class="chip">✓ read-only disk scan</span>
+      <span class="chip">✓ plain-JSON local storage</span>
+      <span class="chip">✓ no accounts</span>
+      <span class="chip">✓ full dependency notices in-app</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= NUMBERS ================= -->
+<section id="numbers" class="hairline">
+  <div class="wrap">
+    <div class="sec-head rv" style="text-align:center">
+      <span class="eyebrow">Featherweight by construction</span>
+      <h2>No bundled Chromium. Your Mac already has a browser.</h2>
+      <p class="lead" style="margin-inline:auto">A Rust core and macOS's own WebKit renderer — so the whole product weighs less than a photo.</p>
+    </div>
+    <div class="nums">
+      <div class="num rv"><div class="v" data-count="4.6" data-suffix=" MB">0</div><div class="l">DMG download</div></div>
+      <div class="num rv"><div class="v" data-count="8" data-prefix="~" data-suffix=" MB">0</div><div class="l">installed, single binary</div></div>
+      <div class="num rv"><div class="v" data-count="2" data-prefix="~" data-suffix="%">0</div><div class="l">CPU, window open</div></div>
+      <div class="num rv"><div class="v" data-count="0">0</div><div class="l">telemetry endpoints</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section style="background:var(--bg2)">
+  <div class="wrap">
+    <div class="sec-head rv" style="text-align:center">
+      <span class="eyebrow">FAQ</span>
+      <h2>Fair questions.</h2>
+    </div>
+    <div class="faq rv">
+      <details open><summary>Does it need an internet connection?</summary><p>No. Everything works offline except the speed test and briefings/Copilot, which need the LLM endpoint you configure.</p></details>
+      <details><summary>Where does my data live?</summary><p><code>~/Library/Application Support/com.kiran.cockpit/</code> — plain JSON: network ledger, disk map, alerts, copilot history. Inspectable, back-up-able, deletable.</p></details>
+      <details><summary>Can it delete files?</summary><p>No. The disk map is read-only by design. The only path to deletion is a script the app writes out for you to review and run yourself.</p></details>
+      <details><summary>What does the briefing send to the LLM?</summary><p>Only the telemetry snapshot the app already shows you — health metrics, process table, network summary, storage digest — to the endpoint you configure. Configure none, and nothing leaves your Mac.</p></details>
+      <details><summary>Intel Macs?</summary><p>Apple Silicon only for v0.1. macOS 14 (Sonoma) or newer.</p></details>
+      <details><summary>Is it signed?</summary><p>Developer ID signed with hardened runtime, notarized by Apple and stapled — it installs with no Gatekeeper warnings.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DOWNLOAD ================= -->
+<section id="download">
+  <div class="wrap">
+    <div class="dl rv">
+      <span class="eyebrow">v0.1 · Apple Silicon · macOS 14+</span>
+      <h2>Take the chair.</h2>
+      <p class="sub2">4.6 MB DMG · signed, notarized and stapled · uninstalls by dragging one app to the Trash.</p>
+      <a class="btn primary" href="https://github.com/ThinkCode/system-cockpit/releases/latest/download/System_Cockpit_0.1.0_aarch64.dmg">Download System Cockpit</a>
+      <div class="chips" style="justify-content:center"><span class="chip">SHA-256 in the release notes</span><span class="chip">no installer, no LaunchAgents, no kext</span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div><b style="color:var(--text)">System Cockpit</b><span>A mission-control dashboard for your Mac.</span></div>
+      <div><span><a href="https://github.com/ThinkCode/system-cockpit">GitHub</a></span><span><a href="https://github.com/ThinkCode/system-cockpit/releases">Releases</a></span><span><a href="https://github.com/ThinkCode/system-cockpit/issues">Issues</a></span></div>
+      <div><span><a href="THIRD_PARTY_NOTICES.md">Third-party notices</a></span><span><a href="https://github.com/bysiber/cleardisk">ClearDisk (MIT) — thanks</a></span><span><a href="https://tauri.app">Built with Tauri</a></span></div>
+    </div>
+    <div class="fine">RUST CORE · WEBKIT UI · NO CHROMIUM BUNDLED · © 2026</div>
+  </div>
+</footer>
+
+<script type="module">
+import * as THREE from "three";
+
+/* ---------- hero scene: wireframe core + particle shell ---------- */
+const canvas = document.getElementById("bg3d");
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
+camera.position.set(0, 0, 7);
+
+const core = new THREE.Group();
+scene.add(core);
+
+const wire = new THREE.LineSegments(
+  new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(2.3, 1)),
+  new THREE.LineBasicMaterial({ color: 0x22d3ee, transparent: true, opacity: 0.28 })
+);
+core.add(wire);
+
+const inner = new THREE.LineSegments(
+  new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(1.35, 0)),
+  new THREE.LineBasicMaterial({ color: 0xa78bfa, transparent: true, opacity: 0.18 })
+);
+core.add(inner);
+
+const N = 1400, pos = new Float32Array(N * 3), col = new Float32Array(N * 3);
+const c1 = new THREE.Color(0x22d3ee), c2 = new THREE.Color(0xe8eef8);
+for (let i = 0; i < N; i++) {
+  const r = 3.4 + Math.random() * 3.4, t = Math.acos(2 * Math.random() - 1), p = Math.random() * Math.PI * 2;
+  pos[i*3] = r * Math.sin(t) * Math.cos(p); pos[i*3+1] = r * Math.cos(t) * 0.72; pos[i*3+2] = r * Math.sin(t) * Math.sin(p);
+  const c = Math.random() < 0.12 ? c1 : c2, k = Math.random() * 0.5 + 0.25;
+  col[i*3] = c.r * k; col[i*3+1] = c.g * k; col[i*3+2] = c.b * k;
+}
+const pg = new THREE.BufferGeometry();
+pg.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+pg.setAttribute("color", new THREE.BufferAttribute(col, 3));
+const stars = new THREE.Points(pg, new THREE.PointsMaterial({ size: 0.028, vertexColors: true, transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending, depthWrite: false }));
+scene.add(stars);
+
+let mx = 0, my = 0, visible = true, inView = true;
+addEventListener("pointermove", (e) => { mx = (e.clientX / innerWidth - 0.5); my = (e.clientY / innerHeight - 0.5); }, { passive: true });
+document.addEventListener("visibilitychange", () => visible = !document.hidden);
+new IntersectionObserver((en) => inView = en[0].isIntersecting).observe(document.querySelector("header"));
+
+function resize() {
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h; camera.updateProjectionMatrix();
+}
+addEventListener("resize", resize); resize();
+
+const clock = new THREE.Clock();
+(function loop() {
+  requestAnimationFrame(loop);
+  if (!visible || !inView || reduced) return;
+  const t = clock.getElapsedTime();
+  core.rotation.y = t * 0.12 + mx * 0.5;
+  core.rotation.x = Math.sin(t * 0.11) * 0.18 + my * 0.35;
+  stars.rotation.y = -t * 0.02;
+  wire.material.opacity = 0.22 + Math.sin(t * 1.4) * 0.06;
+  camera.position.x += (mx * 0.9 - camera.position.x) * 0.03;
+  camera.position.y += (-my * 0.6 - camera.position.y) * 0.03;
+  camera.lookAt(0, 0, 0);
+  renderer.render(scene, camera);
+})();
+
+/* ---------- scroll reveals ---------- */
+const io = new IntersectionObserver((entries) => {
+  for (const e of entries) if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+}, { threshold: 0.12 });
+document.querySelectorAll(".rv").forEach((el) => io.observe(el));
+
+/* ---------- count-up ---------- */
+const nf = new Intl.NumberFormat("en-US");
+const cio = new IntersectionObserver((entries) => {
+  for (const e of entries) {
+    if (!e.isIntersecting) continue;
+    cio.unobserve(e.target);
+    const el = e.target, target = parseFloat(el.dataset.count), pre = el.dataset.prefix || "", suf = el.dataset.suffix || "";
+    const dec = target % 1 !== 0, t0 = performance.now(), dur = 1400;
+    (function step(now) {
+      const k = Math.min((now - t0) / dur, 1), ease = 1 - Math.pow(1 - k, 3), v = target * ease;
+      el.textContent = pre + (dec ? v.toFixed(1) : nf.format(Math.round(v))) + suf;
+      if (k < 1) requestAnimationFrame(step);
+    })(t0);
+  }
+}, { threshold: 0.6 });
+document.querySelectorAll("[data-count]").forEach((el) => cio.observe(el));
+</script>
+</body>
+</html>
