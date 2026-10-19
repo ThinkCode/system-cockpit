@@ -4,7 +4,7 @@
 
 ![System Cockpit — Overview](screenshots/overview.png)
 
-- **Download:** [Latest release](https://github.com/ThinkCode/system-cockpit/releases/latest) — `System_Cockpit_0.1.0_aarch64.dmg` (4.6 MB, Apple Silicon, macOS 14+)
+- **Download:** [Latest release](https://github.com/ThinkCode/system-cockpit/releases/latest) — `System_Cockpit_0.1.0_aarch64.dmg` (4.6 MB, Apple Silicon) or `System_Cockpit_0.1.0_x64.dmg` (Intel) · macOS 14+
 - **Website:** https://thinkcode.github.io/system-cockpit/
 - **Signed & notarized:** Developer ID, hardened runtime, notarized by Apple — no Gatekeeper warnings
 
@@ -67,7 +67,7 @@ Threshold and pattern alerts (runaway CPU, disk-drain rates, memory growth, susp
 
 | | |
 |---|---|
-| Download | **4.6 MB** (DMG) |
+| Download | **4.6 MB** (Apple Silicon) · **~5 MB** (Intel) — both notarized DMGs |
 | Installed | **~8 MB** — one Rust binary, no bundled browser engine |
 | App data | ~2 MB of plain JSON after a day of use |
 | CPU | **~2%** with the window open (2 s telemetry loop); near-zero backgrounded |
@@ -76,13 +76,13 @@ Threshold and pattern alerts (runaway CPU, disk-drain rates, memory growth, susp
 
 ## Requirements
 
-- Apple Silicon Mac (M1 or later)
+- Apple Silicon (M1 or later) or Intel (2018 or newer)
 - macOS 14 (Sonoma) or newer
 - For briefings & Copilot: any OpenAI-compatible endpoint — a local Ollama works great; the header chip shows the active model
 
 ## Install
 
-1. Grab `System_Cockpit_0.1.0_aarch64.dmg` from the [latest release](https://github.com/ThinkCode/system-cockpit/releases/latest).
+1. Grab the DMG for your Mac from the [latest release](https://github.com/ThinkCode/system-cockpit/releases/latest): `System_Cockpit_0.1.0_aarch64.dmg` (Apple Silicon) or `System_Cockpit_0.1.0_x64.dmg` (Intel).
 2. Open it, drag **System Cockpit** to Applications.
 3. Launch. First run is verified by Gatekeeper against Apple's notarization service — no warnings, no right-click dance.
 
@@ -101,7 +101,7 @@ No. The disk map is read-only by design. It can *write out a cleanup script* for
 Only the telemetry snapshot the app already shows you (health metrics, process table, network summary, storage digest) — to the endpoint you configure. Nothing goes anywhere if you don't configure one.
 
 **Intel Macs?**
-Not yet — Apple Silicon only for v0.1.
+Yes — a native Intel build ships alongside the Apple Silicon one (back to ~2018 Intel Macs on macOS 14+). Same features, same footprint discipline.
 
 ## Credits
 

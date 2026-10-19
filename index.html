@@ -60,6 +60,8 @@
   .btn.ghost{border:1px solid var(--hair);color:var(--text);background:rgba(255,255,255,.02)}
   .btn.ghost:hover{border-color:rgba(255,255,255,.2)}
   .chips{display:flex;gap:12px;margin-top:44px;flex-wrap:wrap}
+  .intel-note{margin-top:16px;font-size:13.5px;color:var(--faint)}
+  .intel-note a{color:var(--cyan)}
   .chip{font-family:var(--mono);font-size:12.5px;color:var(--dim);border:1px solid var(--hair);border-radius:8px;padding:9px 14px;background:rgba(255,255,255,.02)}
   .chip b{color:var(--text);font-weight:600}
 
@@ -173,6 +175,7 @@
       <a class="btn primary" href="https://github.com/ThinkCode/system-cockpit/releases/latest/download/System_Cockpit_0.1.0_aarch64.dmg">Download the DMG — 4.6 MB</a>
       <a class="btn ghost" href="system-cockpit-film-30s.mp4">▶ Watch the film · 30s</a>
     </div>
+    <p class="intel-note">On an Intel Mac? <a href="https://github.com/ThinkCode/system-cockpit/releases/latest/download/System_Cockpit_0.1.0_x64.dmg">Download for Intel (~5 MB)</a></p>
     <div class="chips">
       <span class="chip"><b>4.6 MB</b> download</span>
       <span class="chip"><b>~2%</b> CPU, window open</span>
@@ -324,7 +327,7 @@
       <details><summary>Where does my data live?</summary><p><code>~/Library/Application Support/com.kiran.cockpit/</code> — plain JSON: network ledger, disk map, alerts, copilot history. Inspectable, back-up-able, deletable.</p></details>
       <details><summary>Can it delete files?</summary><p>No. The disk map is read-only by design. The only path to deletion is a script the app writes out for you to review and run yourself.</p></details>
       <details><summary>What does the briefing send to the LLM?</summary><p>Only the telemetry snapshot the app already shows you — health metrics, process table, network summary, storage digest — to the endpoint you configure. Configure none, and nothing leaves your Mac.</p></details>
-      <details><summary>Intel Macs?</summary><p>Apple Silicon only for v0.1. macOS 14 (Sonoma) or newer.</p></details>
+      <details><summary>Intel Macs?</summary><p>Yes — a native Intel build ships alongside the Apple Silicon one. The buttons default to Apple Silicon; use the "Download for Intel" link and you're covered back to ~2018 Intel Macs on macOS 14 (Sonoma) or newer.</p></details>
       <details><summary>Is it signed?</summary><p>Developer ID signed with hardened runtime, notarized by Apple and stapled — it installs with no Gatekeeper warnings.</p></details>
     </div>
   </div>
@@ -336,9 +339,11 @@
     <div class="dl rv">
       <span class="eyebrow">v0.1 · Apple Silicon · macOS 14+</span>
       <h2>Take the chair.</h2>
-      <p class="sub2">4.6 MB DMG · signed, notarized and stapled · uninstalls by dragging one app to the Trash.</p>
-      <a class="btn primary" href="https://github.com/ThinkCode/system-cockpit/releases/latest/download/System_Cockpit_0.1.0_aarch64.dmg">Download System Cockpit</a>
-      <div class="chips" style="justify-content:center"><span class="chip">SHA-256 in the release notes</span><span class="chip">no installer, no LaunchAgents, no kext</span></div>
+      <p class="sub2">4.6 MB DMG (Apple Silicon) · ~5 MB (Intel) · signed, notarized and stapled · no installer, no LaunchAgents, no kext.</p>
+      <div class="hero-cta" style="justify-content:center;margin-top:30px">
+        <a class="btn primary" href="https://github.com/ThinkCode/system-cockpit/releases/latest/download/System_Cockpit_0.1.0_aarch64.dmg">Download for Apple Silicon</a>
+        <a class="btn ghost" href="https://github.com/ThinkCode/system-cockpit/releases/latest/download/System_Cockpit_0.1.0_x64.dmg">Download for Intel</a>
+      </div>
     </div>
   </div>
 </section>
