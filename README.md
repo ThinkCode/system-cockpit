@@ -4,7 +4,7 @@
 
 ![System Cockpit — Overview](screenshots/overview.png)
 
-- **Download:** [Latest release](https://github.com/ThinkCode/system-cockpit/releases/latest) — `System_Cockpit_0.1.0_aarch64.dmg` (4.6 MB, Apple Silicon) or `System_Cockpit_0.1.0_x64.dmg` (Intel) · macOS 14+
+- **Download:** [Latest release](https://github.com/ThinkCode/system-cockpit/releases/latest) — `System_Cockpit_0.1.1_aarch64.dmg` (4.7 MB, Apple Silicon) or `System_Cockpit_0.1.1_x64.dmg` (Intel) · macOS 14+
 - **Website:** https://thinkcode.github.io/system-cockpit/
 - **Signed & notarized:** Developer ID, hardened runtime, notarized by Apple — no Gatekeeper warnings
 
@@ -40,7 +40,7 @@ Real download/upload/ping against Cloudflare's edge, with live per-phase progres
 
 ### Intelligence briefing
 
-A four-part briefing (system health, network & firewall, notable processes, storage) written by the LLM you point it at — the header chip shows exactly which model is live. It reads only the telemetry the app already has; severity-tagged findings link to the evidence.
+A four-part briefing (system health, network & firewall, notable processes, storage) written by the model you point it at — Apple Intelligence on-device, a local Ollama, or any OpenAI-compatible endpoint. One click to switch (⇅ Switch in Copilot); the header always shows what's live. Findings are severity-tagged and link to the evidence.
 
 ![Intelligence briefing](screenshots/briefing.png)
 
@@ -78,18 +78,21 @@ Threshold and pattern alerts (runaway CPU, disk-drain rates, memory growth, susp
 
 - Apple Silicon (M1 or later) or Intel (2018 or newer)
 - macOS 14 (Sonoma) or newer
-- For briefings & Copilot: any OpenAI-compatible endpoint — a local Ollama works great; the header chip shows the active model
+- For briefings & Copilot: **Apple Intelligence** (on-device, macOS 26+, M1 or later — nothing leaves the Mac), a **local Ollama**, or **any OpenAI-compatible endpoint**. Pick from the ⇅ Switch menu in Copilot; nothing is configured by default.
 
 ## Install
 
-1. Grab the DMG for your Mac from the [latest release](https://github.com/ThinkCode/system-cockpit/releases/latest): `System_Cockpit_0.1.0_aarch64.dmg` (Apple Silicon) or `System_Cockpit_0.1.0_x64.dmg` (Intel).
+1. Grab the DMG for your Mac from the [latest release](https://github.com/ThinkCode/system-cockpit/releases/latest): `System_Cockpit_0.1.1_aarch64.dmg` (Apple Silicon) or `System_Cockpit_0.1.1_x64.dmg` (Intel).
 2. Open it, drag **System Cockpit** to Applications.
 3. Launch. First run is verified by Gatekeeper against Apple's notarization service — no warnings, no right-click dance.
 
 ## FAQ
 
 **Does it need an internet connection?**
-No. Everything works offline except the speed test and briefings/Copilot (which need the LLM endpoint you configure).
+No. Everything works offline except the speed test and briefings/Copilot — and if you pick Apple Intelligence, those run on-device too.
+
+**Which AI models does it support?**
+Three, switchable with one click from the Copilot header: **Apple Intelligence** (macOS 26+ on Apple Silicon — no download, no account, nothing sent anywhere), **local Ollama** (`ollama pull qwen3:4b` is a great fit for an 8 GB Mac), or **any OpenAI-compatible endpoint** (LM Studio, vLLM, or a cloud router). The header always shows which one is live.
 
 **Where does my data live?**
 `~/Library/Application Support/com.kiran.cockpit/` — plain JSON, inspectable, deletable.
@@ -98,7 +101,7 @@ No. Everything works offline except the speed test and briefings/Copilot (which 
 No. The disk map is read-only by design. It can *write out a cleanup script* for you to review and run — that's the only path to deletion.
 
 **What does the briefing send to the LLM?**
-Only the telemetry snapshot the app already shows you (health metrics, process table, network summary, storage digest) — to the endpoint you configure. Nothing goes anywhere if you don't configure one.
+Only the telemetry snapshot the app already shows you (health metrics, process table, network summary, storage digest) — to the endpoint you configure. With Apple Intelligence selected it never leaves the Mac. Nothing goes anywhere if you don't configure one.
 
 **Intel Macs?**
 Yes — a native Intel build ships alongside the Apple Silicon one (back to ~2018 Intel Macs on macOS 14+). Same features, same footprint discipline.

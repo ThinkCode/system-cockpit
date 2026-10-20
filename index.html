@@ -172,10 +172,10 @@
     <h1>Your Mac,<br>read <span class="grad">at a glance.</span></h1>
     <p class="sub">Live gauges, a read-only disk map, a per-app network ledger and an AI intelligence briefing — in a 4.6&nbsp;MB app that renders with macOS's own engine and never phones home.</p>
     <div class="hero-cta">
-      <a class="btn primary" href="https://github.com/ThinkCode/system-cockpit/releases/latest/download/System_Cockpit_0.1.0_aarch64.dmg">Download the DMG — 4.6 MB</a>
+      <a class="btn primary" href="https://github.com/ThinkCode/system-cockpit/releases/latest/download/System_Cockpit_0.1.1_aarch64.dmg">Download the DMG — 4.6 MB</a>
       <a class="btn ghost" href="system-cockpit-film-30s.mp4">▶ Watch the film · 30s</a>
     </div>
-    <p class="intel-note">On an Intel Mac? <a href="https://github.com/ThinkCode/system-cockpit/releases/latest/download/System_Cockpit_0.1.0_x64.dmg">Download for Intel (~5 MB)</a></p>
+    <p class="intel-note">On an Intel Mac? <a href="https://github.com/ThinkCode/system-cockpit/releases/latest/download/System_Cockpit_0.1.1_x64.dmg">Download for Intel (~5 MB)</a></p>
     <div class="chips">
       <span class="chip"><b>4.6 MB</b> download</span>
       <span class="chip"><b>~2%</b> CPU, window open</span>
@@ -209,7 +209,7 @@
       <div class="card rv"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="1.6"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 21l1.9-5.4A8 8 0 1 1 21 12z"/></svg></div><h3>Copilot</h3><p>"Why is the disk filling up?" "Anything unusual on the network?" Ask in plain language; answers stream from your local model, grounded in live telemetry.</p></div>
       <div class="card rv"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="1.6"><path d="M12 3a6 6 0 0 0-6 6v4l-2 4h16l-2-4V9a6 6 0 0 0-6-6z"/><path d="M10 21h4"/></svg></div><h3>Alerts with explanations</h3><p>Runaway CPU, disk-drain rates, memory growth, suspicious connection fan-out — each with a one-click plain-language explanation, persisted locally.</p></div>
       <div class="card rv"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.6"><path d="M4 19V5a2 2 0 0 1 2-2h13v18H6a2 2 0 0 1-2-2z"/><path d="M8 7h8M8 11h8M8 15h5"/></svg></div><h3>It remembers</h3><p>A local knowledge base feeds what past briefings learned into future ones — so recurring suspects get recognized, not re-discovered.</p></div>
-      <div class="card rv"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></div><h3>Bring your own model</h3><p>Briefings and Copilot speak to any OpenAI-compatible endpoint — a local Ollama is ideal. The header chip always shows which model is live.</p></div>
+      <div class="card rv"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></div><h3>Three brains, one click</h3><p>Apple Intelligence on-device (macOS 26+ — no download, nothing sent), a local Ollama, or any OpenAI-compatible endpoint. Switch from the Copilot header; the header always shows what's live.</p></div>
     </div>
   </div>
 </section>
@@ -267,11 +267,11 @@
       <div class="copy rv">
         <span class="badge info">AI, on your terms</span>
         <h2>A briefing that cites its evidence.</h2>
-        <p class="lead">Four sections — system health, network &amp; firewall, notable processes, storage — written by the local model you point it at. Findings carry severity tags and reference the numbers they came from. Your telemetry goes to your endpoint, or nowhere at all.</p>
+        <p class="lead">Four sections — system health, network &amp; firewall, notable processes, storage — written by the model you point it at — Apple Intelligence on-device, a local Ollama, or an API endpoint. Findings carry severity tags and reference the numbers they came from. Your telemetry goes to your endpoint, to your Mac, or nowhere at all.</p>
         <ul class="points">
           <li>Copilot answers "why is the disk filling up?" from live data</li>
           <li>Alert explanations: one click, plain language</li>
-          <li>Header chip shows exactly which model is live</li>
+          <li>One-click provider switch; the header always shows what's live</li>
         </ul>
       </div>
       <figure class="rv">
@@ -323,10 +323,10 @@
       <h2>Fair questions.</h2>
     </div>
     <div class="faq rv">
-      <details open><summary>Does it need an internet connection?</summary><p>No. Everything works offline except the speed test and briefings/Copilot, which need the LLM endpoint you configure.</p></details>
+      <details open><summary>Does it need an internet connection?</summary><p>No. Everything works offline except the speed test and briefings/Copilot — and if you pick Apple Intelligence, those run on-device too.</p></details>
       <details><summary>Where does my data live?</summary><p><code>~/Library/Application Support/com.kiran.cockpit/</code> — plain JSON: network ledger, disk map, alerts, copilot history. Inspectable, back-up-able, deletable.</p></details>
       <details><summary>Can it delete files?</summary><p>No. The disk map is read-only by design. The only path to deletion is a script the app writes out for you to review and run yourself.</p></details>
-      <details><summary>What does the briefing send to the LLM?</summary><p>Only the telemetry snapshot the app already shows you — health metrics, process table, network summary, storage digest — to the endpoint you configure. Configure none, and nothing leaves your Mac.</p></details>
+      <details><summary>What does the briefing send to the LLM?</summary><p>Only the telemetry snapshot the app already shows you — health metrics, process table, network summary, storage digest — to the endpoint you configure. With Apple Intelligence selected it never leaves the Mac. Configure none, and nothing leaves your Mac.</p></details>
       <details><summary>Intel Macs?</summary><p>Yes — a native Intel build ships alongside the Apple Silicon one. The buttons default to Apple Silicon; use the "Download for Intel" link and you're covered back to ~2018 Intel Macs on macOS 14 (Sonoma) or newer.</p></details>
       <details><summary>Is it signed?</summary><p>Developer ID signed with hardened runtime, notarized by Apple and stapled — it installs with no Gatekeeper warnings.</p></details>
     </div>
@@ -341,8 +341,8 @@
       <h2>Take the chair.</h2>
       <p class="sub2">4.6 MB DMG (Apple Silicon) · ~5 MB (Intel) · signed, notarized and stapled · no installer, no LaunchAgents, no kext.</p>
       <div class="hero-cta" style="justify-content:center;margin-top:30px">
-        <a class="btn primary" href="https://github.com/ThinkCode/system-cockpit/releases/latest/download/System_Cockpit_0.1.0_aarch64.dmg">Download for Apple Silicon</a>
-        <a class="btn ghost" href="https://github.com/ThinkCode/system-cockpit/releases/latest/download/System_Cockpit_0.1.0_x64.dmg">Download for Intel</a>
+        <a class="btn primary" href="https://github.com/ThinkCode/system-cockpit/releases/latest/download/System_Cockpit_0.1.1_aarch64.dmg">Download for Apple Silicon</a>
+        <a class="btn ghost" href="https://github.com/ThinkCode/system-cockpit/releases/latest/download/System_Cockpit_0.1.1_x64.dmg">Download for Intel</a>
       </div>
     </div>
   </div>

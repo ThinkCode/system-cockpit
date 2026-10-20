@@ -58,7 +58,7 @@ Every process with CPU, memory, threads, network I/O, disk I/O, and path — sor
 *On screen: sort by CPU; reveal a process path.*
 
 ### 9. Private by design
-All analysis runs on your machine against a local model (Ollama, LM Studio, or your own endpoint). Telemetry, scans, chats, and learnings never leave your Mac. No account, no cloud, no tracking. Speed tests touch only Cloudflare's measurement endpoint.
+All analysis runs on your machine against the model you choose: Apple Intelligence on-device (macOS 26+ — nothing is sent anywhere), a local Ollama, LM Studio, or your own endpoint. Telemetry, scans, chats, and learnings never leave your Mac unless you point them at an endpoint yourself. No account, no cloud, no tracking. Speed tests touch only Cloudflare's measurement endpoint.
 
 *On screen: settings showing the local model endpoint; "local LLM" chip.*
 
