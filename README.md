@@ -4,7 +4,7 @@
 
 ![System Cockpit — Overview](screenshots/overview.png)
 
-- **Download:** [Latest release](https://github.com/ThinkCode/system-cockpit/releases/latest) — `System_Cockpit_0.1.1_aarch64.dmg` (4.7 MB, Apple Silicon) or `System_Cockpit_0.1.1_x64.dmg` (Intel) · macOS 14+
+- **Download:** [Latest release](https://github.com/ThinkCode/system-cockpit/releases/latest) — `System_Cockpit_0.1.2_aarch64.dmg` (4.7 MB, Apple Silicon) or `System_Cockpit_0.1.2_x64.dmg` (Intel) · macOS 14+
 - **Website:** https://thinkcode.github.io/system-cockpit/
 - **Signed & notarized:** Developer ID, hardened runtime, notarized by Apple — no Gatekeeper warnings
 
@@ -40,7 +40,7 @@ Real download/upload/ping against Cloudflare's edge, with live per-phase progres
 
 ### Intelligence briefing
 
-A four-part briefing (system health, network & firewall, notable processes, storage) written by the model you point it at — Apple Intelligence on-device, a local Ollama, or any OpenAI-compatible endpoint. One click to switch (⇅ Switch in Copilot); the header always shows what's live. Findings are severity-tagged and link to the evidence.
+A four-part briefing (system health, network & firewall, notable processes, storage) written by the model you point it at — Apple Intelligence on-device, a local Ollama, or any OpenAI-compatible endpoint. One click to switch — the ⚙ gear in the top bar works from any tab; the Copilot header always shows what's live. Findings are severity-tagged and link to the evidence.
 
 ![Intelligence briefing](screenshots/briefing.png)
 
@@ -78,11 +78,11 @@ Threshold and pattern alerts (runaway CPU, disk-drain rates, memory growth, susp
 
 - Apple Silicon (M1 or later) or Intel (2018 or newer)
 - macOS 14 (Sonoma) or newer
-- For briefings & Copilot: **Apple Intelligence** (on-device, macOS 26+, M1 or later — nothing leaves the Mac), a **local Ollama**, or **any OpenAI-compatible endpoint**. Pick from the ⇅ Switch menu in Copilot; nothing is configured by default.
+- For briefings & Copilot: **Apple Intelligence** (on-device, macOS 26+, M1 or later — nothing leaves the Mac), a **local Ollama**, or **any OpenAI-compatible endpoint**. Pick from the ⚙ gear menu in the top bar; nothing is configured by default.
 
 ## Install
 
-1. Grab the DMG for your Mac from the [latest release](https://github.com/ThinkCode/system-cockpit/releases/latest): `System_Cockpit_0.1.1_aarch64.dmg` (Apple Silicon) or `System_Cockpit_0.1.1_x64.dmg` (Intel).
+1. Grab the DMG for your Mac from the [latest release](https://github.com/ThinkCode/system-cockpit/releases/latest): `System_Cockpit_0.1.2_aarch64.dmg` (Apple Silicon) or `System_Cockpit_0.1.2_x64.dmg` (Intel).
 2. Open it, drag **System Cockpit** to Applications.
 3. Launch. First run is verified by Gatekeeper against Apple's notarization service — no warnings, no right-click dance.
 
