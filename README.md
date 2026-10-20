@@ -4,7 +4,7 @@
 
 ![System Cockpit — Overview](screenshots/overview.png)
 
-- **Download:** [Latest release](https://github.com/ThinkCode/system-cockpit/releases/latest) — `System_Cockpit_0.1.3_aarch64.dmg` (4.7 MB, Apple Silicon) or `System_Cockpit_0.1.3_x64.dmg` (Intel) · macOS 14+
+- **Download:** [Latest release](https://github.com/ThinkCode/system-cockpit/releases/latest) — `System_Cockpit_0.1.4_aarch64.dmg` (4.7 MB, Apple Silicon) or `System_Cockpit_0.1.4_x64.dmg` (Intel) · macOS 14+
 - **Website:** https://thinkcode.github.io/system-cockpit/
 - **Signed & notarized:** Developer ID, hardened runtime, notarized by Apple — no Gatekeeper warnings
 
@@ -82,7 +82,7 @@ Threshold and pattern alerts (runaway CPU, disk-drain rates, memory growth, susp
 
 ## Install
 
-1. Grab the DMG for your Mac from the [latest release](https://github.com/ThinkCode/system-cockpit/releases/latest): `System_Cockpit_0.1.3_aarch64.dmg` (Apple Silicon) or `System_Cockpit_0.1.3_x64.dmg` (Intel).
+1. Grab the DMG for your Mac from the [latest release](https://github.com/ThinkCode/system-cockpit/releases/latest): `System_Cockpit_0.1.4_aarch64.dmg` (Apple Silicon) or `System_Cockpit_0.1.4_x64.dmg` (Intel).
 2. Open it, drag **System Cockpit** to Applications.
 3. Launch. First run is verified by Gatekeeper against Apple's notarization service — no warnings, no right-click dance.
 
