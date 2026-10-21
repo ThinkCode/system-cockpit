@@ -62,8 +62,8 @@ All analysis runs on your machine against the model you choose: Apple Intelligen
 
 *On screen: settings showing the local model endpoint; "local LLM" chip.*
 
-### 10. Native, fast, and beautiful
-Built in Rust with a React cockpit UI — tiny footprint, buttery 1-second refresh. Four themes: Light, Dark, **Monochrome**, and **Matrix terminal**. Universally signed and notarized for macOS.
+### 10. Native, fast, and beautiful — now in the menu bar too
+Built in Rust with a React cockpit UI — tiny footprint, buttery 1-second refresh. Four themes: Light, Dark, **Monochrome**, and **Matrix terminal**. Universally signed and notarized for macOS. **New in v0.3.0:** a menu bar icon — a health dot (green/amber/red) with live CPU and network vitals, the top three alerts one click away, and a speed test from the menu, so the cockpit follows you everywhere.
 
 *On screen: theme switcher cycling through all four themes.*
 
